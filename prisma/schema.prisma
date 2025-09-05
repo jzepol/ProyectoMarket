@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id             Int             @id @default(autoincrement())
+  sku            String          @unique
+  barcode        String?         @unique
+  name           String
+  description    String?
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  categoryId     Int?
+  purchasePrice  Float
+  marginPct      Float
+  salePrice      Float
+  pricingMode    PricingMode    @default(UNIT)
+  packageWeightKg Float?        @default(1)
+  stockQty       Float           @default(0)
+  stockMin       Float           @default(0)
+  supplier       Supplier?       @relation(fields: [supplierId], references: [id])
+  supplierId     Int?
+  movements      StockMovement[]
+  saleItems      SaleItem[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id        Int       @id @default(autoincrement())
+  name      String
+  contact   String?
+  email     String?
+  phone     String?
+  address   String?
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model StockMovement {
+  id         Int          @id @default(autoincrement())
+  product    Product      @relation(fields: [productId], references: [id])
+  productId  Int
+  date       DateTime     @default(now())
+  type       MovementType
+  qty        Float
+  reference  String?
+  createdAt  DateTime     @default(now())
+}
+
+model Sale {
+  id        Int       @id @default(autoincrement())
+  items     SaleItem[]
+  total     Float
+  createdAt DateTime  @default(now())
+}
+
+model SaleItem {
+  id       Int    @id @default(autoincrement())
+  sale     Sale   @relation(fields: [saleId], references: [id])
+  saleId   Int
+  product  Product @relation(fields: [productId], references: [id])
+  productId Int
+  qty      Float
+  price    Float
+}
+
+enum MovementType {
+  IN
+  OUT
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum PricingMode {
+  UNIT
+  WEIGHT
+}
+
