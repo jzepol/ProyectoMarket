@@ -113,7 +113,7 @@ export default function CategoriesPage() {
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="btn-primary"
+          className="btn btn-action"
         >
           <Plus className="w-4 h-4 mr-2" />
           Nueva Categoría

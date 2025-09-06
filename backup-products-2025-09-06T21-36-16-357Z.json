@@ -1,0 +1,158 @@
+{
+  "timestamp": "2025-09-06T21:36:16.358Z",
+  "totalProducts": 5,
+  "products": [
+    {
+      "id": 1,
+      "sku": "Coca 1.5l",
+      "barcode": "00000001",
+      "name": "Coca 1.5l",
+      "description": "",
+      "categoryId": 2,
+      "purchasePrice": 1000,
+      "marginPct": 20,
+      "salePrice": 1250,
+      "pricingMode": "UNIT",
+      "packageWeightKg": 1,
+      "stockQty": 10,
+      "stockMin": 5,
+      "supplierId": 2,
+      "category": {
+        "id": 2,
+        "name": "Bebidas",
+        "createdAt": "2025-08-27T15:44:54.659Z",
+        "updatedAt": "2025-08-27T15:44:54.659Z"
+      },
+      "supplier": {
+        "id": 2,
+        "name": "Dario",
+        "contact": "Cocacola",
+        "email": "dario@coca.com",
+        "phone": "2657303939",
+        "address": "distribuidora mercedes 26",
+        "createdAt": "2025-08-27T15:44:48.445Z",
+        "updatedAt": "2025-08-27T15:44:48.445Z"
+      },
+      "createdAt": "2025-08-27T15:45:40.040Z",
+      "updatedAt": "2025-08-27T15:45:40.040Z"
+    },
+    {
+      "id": 2,
+      "sku": "pebete",
+      "barcode": "00000002",
+      "name": "Pebete milan y queso",
+      "description": "",
+      "categoryId": 3,
+      "purchasePrice": 400,
+      "marginPct": 60,
+      "salePrice": 1000,
+      "pricingMode": "UNIT",
+      "packageWeightKg": 1,
+      "stockQty": 10,
+      "stockMin": 5,
+      "supplierId": null,
+      "category": {
+        "id": 3,
+        "name": "Almacen",
+        "createdAt": "2025-08-27T15:45:02.005Z",
+        "updatedAt": "2025-08-27T15:45:02.005Z"
+      },
+      "supplier": null,
+      "createdAt": "2025-08-27T15:46:36.155Z",
+      "updatedAt": "2025-08-27T15:46:36.155Z"
+    },
+    {
+      "id": 3,
+      "sku": "Pan",
+      "barcode": "0000004",
+      "name": "Pan",
+      "description": null,
+      "categoryId": 1,
+      "purchasePrice": 7000,
+      "marginPct": 30,
+      "salePrice": 2000,
+      "pricingMode": "WEIGHT",
+      "packageWeightKg": 1,
+      "stockQty": 20,
+      "stockMin": 3,
+      "supplierId": 1,
+      "category": {
+        "id": 1,
+        "name": "Harinas",
+        "createdAt": "2025-08-27T15:43:28.395Z",
+        "updatedAt": "2025-08-27T15:43:28.395Z"
+      },
+      "supplier": {
+        "id": 1,
+        "name": "Carlos Panadero",
+        "contact": "cel",
+        "email": "carlosp@gmail.com",
+        "phone": "2657301882",
+        "address": "25 de mayo 600",
+        "createdAt": "2025-08-27T15:44:13.326Z",
+        "updatedAt": "2025-08-27T15:44:13.326Z"
+      },
+      "createdAt": "2025-08-27T15:47:47.065Z",
+      "updatedAt": "2025-08-27T16:19:39.758Z"
+    },
+    {
+      "id": 4,
+      "sku": "7791190003690",
+      "barcode": "7791190003690",
+      "name": "fosforo",
+      "description": "fosforo",
+      "categoryId": 3,
+      "purchasePrice": 1000,
+      "marginPct": 10,
+      "salePrice": 1111,
+      "pricingMode": "UNIT",
+      "packageWeightKg": 1,
+      "stockQty": 32,
+      "stockMin": 11,
+      "supplierId": 2,
+      "category": {
+        "id": 3,
+        "name": "Almacen",
+        "createdAt": "2025-08-27T15:45:02.005Z",
+        "updatedAt": "2025-08-27T15:45:02.005Z"
+      },
+      "supplier": {
+        "id": 2,
+        "name": "Dario",
+        "contact": "Cocacola",
+        "email": "dario@coca.com",
+        "phone": "2657303939",
+        "address": "distribuidora mercedes 26",
+        "createdAt": "2025-08-27T15:44:48.445Z",
+        "updatedAt": "2025-08-27T15:44:48.445Z"
+      },
+      "createdAt": "2025-08-28T01:25:22.272Z",
+      "updatedAt": "2025-08-28T01:25:40.824Z"
+    },
+    {
+      "id": 5,
+      "sku": "6920108160335",
+      "barcode": "6920101603334",
+      "name": "mafalda book",
+      "description": "mafalda book",
+      "categoryId": 3,
+      "purchasePrice": 1000,
+      "marginPct": 23.05,
+      "salePrice": 1299,
+      "pricingMode": "UNIT",
+      "packageWeightKg": 1,
+      "stockQty": 6,
+      "stockMin": 1,
+      "supplierId": null,
+      "category": {
+        "id": 3,
+        "name": "Almacen",
+        "createdAt": "2025-08-27T15:45:02.005Z",
+        "updatedAt": "2025-08-27T15:45:02.005Z"
+      },
+      "supplier": null,
+      "createdAt": "2025-08-28T03:45:48.804Z",
+      "updatedAt": "2025-08-28T03:47:10.715Z"
+    }
+  ]
+}

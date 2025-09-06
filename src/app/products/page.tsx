@@ -77,7 +77,7 @@ export default function ProductsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Productos</h1>
           <p className="text-gray-600">Gestiona el inventario de productos</p>
         </div>
-        <Link href="/products/new" className="btn-primary">
+        <Link href="/products/new" className="btn btn-action">
           <Plus className="w-4 h-4 mr-2" />
           Nuevo Producto
         </Link>

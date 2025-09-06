@@ -20,10 +20,12 @@ export default function RootLayout({
     <html lang="es">
       <body className={inter.className}>
         <DataProvider>
-          <div className="flex h-screen bg-gray-50">
+          <div className="flex h-screen">
             <Sidebar />
-            <main className="flex-1 overflow-auto lg:ml-64">
-              {children}
+            <main className="flex-1 overflow-auto lg:ml-64 p-6">
+              <div className="animate-fadeIn">
+                {children}
+              </div>
             </main>
           </div>
         </DataProvider>

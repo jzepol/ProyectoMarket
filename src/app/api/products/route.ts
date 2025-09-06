@@ -75,12 +75,12 @@ export async function POST(request: NextRequest) {
       supplierId
     } = body
 
-    // Calcular precio de venta usando margen (ganancia sobre precio de venta)
+    // Calcular precio de venta usando markup (ganancia sobre precio de compra)
     // Si es por peso y el precio de compra es por paquete, convertir a costo por kg
     const isWeight = pricingMode === 'WEIGHT'
     const pkgKg = isWeight ? parseFloat(packageWeightKg || 1) || 1 : 1
     const purchaseUnitCost = isWeight ? (parseFloat(purchasePrice) / pkgKg) : parseFloat(purchasePrice)
-    const salePrice = purchaseUnitCost / (1 - parseFloat(marginPct) / 100)
+    const salePrice = Math.round(purchaseUnitCost * (1 + parseFloat(marginPct) / 100))
 
     const createData: any = {
         sku,

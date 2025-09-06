@@ -98,7 +98,7 @@ export default function NewProductPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white backdrop-blur-sm shadow-lg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
@@ -106,7 +106,7 @@ export default function NewProductPage() {
                 <ArrowLeft className="w-5 h-5 text-gray-600" />
               </Link>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Nuevo Producto</h1>
+                <h1 className="text-3xl font-bold gradient-text">Nuevo Producto</h1>
                 <p className="text-gray-600">Agregar producto al inventario</p>
               </div>
             </div>
@@ -117,12 +117,14 @@ export default function NewProductPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="card">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Información Básica</h2>
+            <div className="card-header">
+              <h2 className="text-lg font-semibold text-white">Información Básica</h2>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  SKU *
+                  SKU (Identificación Interna) *
                 </label>
                 <input
                   type="text"
@@ -131,13 +133,16 @@ export default function NewProductPage() {
                   onChange={handleChange}
                   required
                   className="input-field"
-                  placeholder="SKU del producto"
+                  placeholder="Ej: PROD-001, MANZANA-ROJA"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Identificador único interno del producto
+                </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Código de Barras
+                  Código de Barras (Opcional)
                 </label>
                 <input
                   type="text"
@@ -145,8 +150,11 @@ export default function NewProductPage() {
                   value={formData.barcode}
                   onChange={handleChange}
                   className="input-field"
-                  placeholder="Código de barras"
+                  placeholder="Ej: 1234567890123 (13 dígitos)"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Código para escaneo en punto de venta (puede ser diferente al SKU)
+                </p>
               </div>
 
               <div className="md:col-span-2">
@@ -219,7 +227,9 @@ export default function NewProductPage() {
           </div>
 
           <div className="card">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Precios y Stock</h2>
+            <div className="card-header">
+              <h2 className="text-lg font-semibold text-white">Precios y Stock</h2>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-1">
@@ -261,7 +271,7 @@ export default function NewProductPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Margen de Ganancia (%) *
+                  Markup (%) *
                 </label>
                 <div className="relative">
                   <input
@@ -281,7 +291,7 @@ export default function NewProductPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio de Venta con Margen Aplicado
+                  Precio de Venta con Markup Aplicado
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
@@ -289,8 +299,8 @@ export default function NewProductPage() {
                     type="text"
                     value={
                       formData.purchasePrice && formData.marginPct
-                        ? (parseFloat(formData.purchasePrice) / (1 - parseFloat(formData.marginPct) / 100)).toFixed(2)
-                        : '0.00'
+                        ? Math.round(parseFloat(formData.purchasePrice) * (1 + parseFloat(formData.marginPct) / 100))
+                        : '0'
                     }
                     disabled
                     className="input-field pl-8 bg-gray-100"
@@ -355,13 +365,13 @@ export default function NewProductPage() {
           </div>
 
           <div className="flex justify-end space-x-4">
-            <Link href="/products" className="btn-secondary">
+            <Link href="/products" className="btn btn-secondary">
               Cancelar
             </Link>
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary"
+              className="btn btn-primary"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

@@ -156,9 +156,9 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const calculateSalePrice = () => {
     const purchasePrice = parseFloat(formData.purchasePrice) || 0
     const marginPct = parseFloat(formData.marginPct) || 0
-    // Usar margen (ganancia sobre precio de venta) en lugar de markup
-    const salePrice = purchasePrice / (1 - marginPct / 100)
-    setFormData(prev => ({ ...prev, salePrice: salePrice.toFixed(2) }))
+    // Usar markup (ganancia sobre precio de compra) y redondear a entero
+    const salePrice = Math.round(purchasePrice * (1 + marginPct / 100))
+    setFormData(prev => ({ ...prev, salePrice: salePrice.toString() }))
   }
 
   if (loading) {
@@ -206,7 +206,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                SKU *
+                SKU (Identificación Interna) *
               </label>
               <input
                 type="text"
@@ -214,19 +214,27 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                 className="input-field"
                 required
+                placeholder="Ej: PROD-001, MANZANA-ROJA"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Identificador único interno del producto
+              </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Código de Barras
+                Código de Barras (Opcional)
               </label>
               <input
                 type="text"
                 value={formData.barcode}
                 onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
                 className="input-field"
+                placeholder="Ej: 1234567890123 (13 dígitos)"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Código para escaneo en punto de venta (puede ser diferente al SKU)
+              </p>
             </div>
 
             <div className="md:col-span-2">
@@ -299,6 +307,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 step="0.01"
                 value={formData.purchasePrice}
                 onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
+                onBlur={calculateSalePrice}
                 className="input-field"
                 required
                 min="0"
@@ -307,7 +316,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Margen de Ganancia (%) *
+                Markup (%) *
               </label>
               <input
                 type="number"

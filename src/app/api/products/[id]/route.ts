@@ -108,7 +108,7 @@ export async function PUT(
     const isWeight = pricingMode === 'WEIGHT'
     const pkgKg = isWeight ? parseFloat(packageWeightKg || 1) || 1 : 1
     const purchaseUnitCost = isWeight ? (parseFloat(purchasePrice) / pkgKg) : parseFloat(purchasePrice)
-    const computedSalePrice = parseFloat(salePrice ?? (purchaseUnitCost / (1 - parseFloat(marginPct) / 100)))
+    const computedSalePrice = Math.round(parseFloat(salePrice ?? (purchaseUnitCost * (1 + parseFloat(marginPct) / 100))))
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {

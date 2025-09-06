@@ -147,7 +147,7 @@ export default function SuppliersPage() {
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="btn-primary"
+          className="btn btn-action"
         >
           <Plus className="w-4 h-4 mr-2" />
           Nuevo Proveedor

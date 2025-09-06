@@ -1,0 +1,6 @@
+ID,SKU,Barcode,Name,Description,Category,PurchasePrice,MarginPct,SalePrice,PricingMode,PackageWeightKg,StockQty,StockMin,Supplier,CreatedAt,UpdatedAt
+1,"Coca 1.5l","00000001","Coca 1.5l","","Bebidas",1000,20,1250,"UNIT",1,10,5,"Dario","Wed Aug 27 2025 12:45:40 GMT-0300 (hora estándar de Argentina)","Wed Aug 27 2025 12:45:40 GMT-0300 (hora estándar de Argentina)"
+2,"pebete","00000002","Pebete milan y queso","","Almacen",400,60,1000,"UNIT",1,10,5,"","Wed Aug 27 2025 12:46:36 GMT-0300 (hora estándar de Argentina)","Wed Aug 27 2025 12:46:36 GMT-0300 (hora estándar de Argentina)"
+3,"Pan","0000004","Pan","","Harinas",7000,30,2000,"WEIGHT",1,20,3,"Carlos Panadero","Wed Aug 27 2025 12:47:47 GMT-0300 (hora estándar de Argentina)","Wed Aug 27 2025 13:19:39 GMT-0300 (hora estándar de Argentina)"
+4,"7791190003690","7791190003690","fosforo","fosforo","Almacen",1000,10,1111,"UNIT",1,32,11,"Dario","Wed Aug 27 2025 22:25:22 GMT-0300 (hora estándar de Argentina)","Wed Aug 27 2025 22:25:40 GMT-0300 (hora estándar de Argentina)"
+5,"6920108160335","6920101603334","mafalda book","mafalda book","Almacen",1000,23.05,1299,"UNIT",1,6,1,"","Thu Aug 28 2025 00:45:48 GMT-0300 (hora estándar de Argentina)","Thu Aug 28 2025 00:47:10 GMT-0300 (hora estándar de Argentina)"

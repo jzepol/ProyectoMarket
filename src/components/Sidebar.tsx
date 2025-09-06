@@ -35,13 +35,13 @@ export default function Sidebar() {
     <>
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
-          <div className="flex h-16 items-center justify-between px-4">
-            <h1 className="text-xl font-bold text-gray-900">Proyecto Market</h1>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white backdrop-blur-xl shadow-xl border-r border-gray-200">
+          <div className="flex h-16 items-center justify-between px-4 bg-gradient-to-r from-blue-600 to-purple-600">
+            <h1 className="text-xl font-bold text-white">Proyecto Market</h1>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-300"
             >
               <X className="h-6 w-6" />
             </button>
@@ -54,15 +54,15 @@ export default function Sidebar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-300 ${
                     isActive
-                      ? 'bg-primary-100 text-primary-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-gray-900 hover:shadow-md'
                   }`}
                 >
                   <item.icon
-                    className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                      isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
+                    className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-300 ${
+                      isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
                     }`}
                   />
                   {item.name}
@@ -75,10 +75,10 @@ export default function Sidebar() {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
+        <div className="flex flex-col flex-grow bg-white backdrop-blur-xl shadow-xl border-r border-gray-200">
           {/* Logo */}
-          <div className="flex items-center h-16 px-4 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-gray-900">Proyecto Market</h1>
+          <div className="flex items-center h-16 px-4 bg-gradient-to-r from-blue-600 to-purple-600">
+            <h1 className="text-xl font-bold text-white">Proyecto Market</h1>
           </div>
 
           {/* Navigation */}
@@ -89,15 +89,15 @@ export default function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
+                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-300 ${
                     isActive
-                      ? 'bg-primary-100 text-primary-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-gray-900 hover:shadow-md'
                   }`}
                 >
                   <item.icon
-                    className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                      isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
+                    className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-300 ${
+                      isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
                     }`}
                   />
                   {item.name}
@@ -119,7 +119,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-40">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 bg-white shadow-sm"
+          className="p-3 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-white bg-white backdrop-blur-sm shadow-lg border border-gray-200 transition-all duration-300"
         >
           <Menu className="h-6 w-6" />
         </button>
