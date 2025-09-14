@@ -56,6 +56,7 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [dateRange, setDateRange] = useState('today')
+  const [customDate, setCustomDate] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [salesPerPage] = useState(10)
 
@@ -66,7 +67,18 @@ export default function ReportsPage() {
       }
 
       // Agregar timestamp para evitar caché
-      const response = await fetch(`/api/stats?dateRange=${dateRange}&page=${page}&limit=${salesPerPage}&t=${Date.now()}`, {
+      const params = new URLSearchParams({
+        dateRange,
+        page: page.toString(),
+        limit: salesPerPage.toString(),
+        t: Date.now().toString()
+      })
+      
+      if (dateRange === 'custom' && customDate) {
+        params.append('customDate', customDate)
+      }
+      
+      const response = await fetch(`/api/stats?${params}`, {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -104,7 +116,7 @@ export default function ReportsPage() {
       setLoading(false)
       setRefreshing(false)
     }
-  }, [dateRange, salesPerPage])
+  }, [dateRange, customDate, salesPerPage])
 
   useEffect(() => {
     fetchStats(true, currentPage)
@@ -132,12 +144,38 @@ export default function ReportsPage() {
     fetchStats(true, newPage)
   }
 
+  const handleDateRangeChange = (newDateRange: string) => {
+    setDateRange(newDateRange)
+    if (newDateRange !== 'custom') {
+      setCustomDate('')
+    }
+  }
+
+  const handleCustomDateChange = (date: string) => {
+    setCustomDate(date)
+    if (date) {
+      setDateRange('custom')
+    }
+  }
+
   const getDateRangeLabel = () => {
     switch (dateRange) {
       case 'today': return 'Hoy'
       case 'week': return 'Esta Semana'
       case 'month': return 'Este Mes'
       case 'year': return 'Este Año'
+      case 'custom': 
+        if (customDate) {
+          // Crear fecha en zona horaria local para evitar desfases
+          const [year, month, day] = customDate.split('-').map(Number)
+          const date = new Date(year, month - 1, day)
+          return date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
+        }
+        return 'Fecha Personalizada'
       default: return 'Hoy'
     }
   }
@@ -160,21 +198,35 @@ export default function ReportsPage() {
         <div className="flex items-center space-x-4">
           <select
             value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
+            onChange={(e) => handleDateRangeChange(e.target.value)}
             className="input-field w-auto"
           >
             <option value="today">Hoy</option>
             <option value="week">Esta Semana</option>
             <option value="month">Este Mes</option>
             <option value="year">Este Año</option>
+            <option value="custom">Fecha Personalizada</option>
           </select>
+          
+          {dateRange === 'custom' && (
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-4 h-4 text-gray-500" />
+              <input
+                type="date"
+                value={customDate}
+                onChange={(e) => handleCustomDateChange(e.target.value)}
+                className="input-field w-auto"
+                max={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+          )}
           <button
             onClick={handleRefresh}
-            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+            className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
             disabled={loading || refreshing}
           >
             {refreshing ? (
-              <RefreshCw className="w-5 h-5 animate-spin mr-2" />
+              <RefreshCw className="w-5 h-5 mr-2" />
             ) : (
               <RefreshCw className="w-5 h-5 mr-2" />
             )}
@@ -185,7 +237,7 @@ export default function ReportsPage() {
 
       {loading ? (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <div className="rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Cargando estadísticas...</p>
         </div>
       ) : (

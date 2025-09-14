@@ -168,7 +168,7 @@ export default function CategoriesPage() {
         
         {loading ? (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+            <div className="rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
             <p className="mt-2 text-gray-600">Cargando categorías...</p>
           </div>
         ) : (
@@ -205,15 +205,17 @@ export default function CategoriesPage() {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleEdit(category)}
-                          className="text-primary-600 hover:text-primary-900"
+                          className="btn-primary flex items-center px-3 py-1 text-sm"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-4 h-4 mr-1" />
+                          Editar
                         </button>
                         <button
                           onClick={() => handleDelete(category.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="btn-danger flex items-center px-3 py-1 text-sm"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Eliminar
                         </button>
                       </div>
                     </td>

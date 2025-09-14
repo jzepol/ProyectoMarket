@@ -21,7 +21,7 @@ export function RefreshButton({
       disabled={disabled || loading}
       className={`btn-secondary flex items-center ${className}`}
     >
-      <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+      <RefreshCw className="w-4 h-4 mr-2" />
       {children || (loading ? 'Actualizando...' : 'Actualizar')}
     </button>
   )

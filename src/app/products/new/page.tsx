@@ -28,6 +28,7 @@ export default function NewProductPage() {
     categoryId: '',
     purchasePrice: '',
     marginPct: '',
+    salePrice: '',
     stockQty: '0',
     stockMin: '0',
     supplierId: '',
@@ -87,18 +88,104 @@ export default function NewProductPage() {
     }
   }
 
+  // Calcular precio de venta basado en precio de compra y markup
+  const calculateSalePrice = (purchasePrice: string, markupPct: string) => {
+    if (purchasePrice && markupPct) {
+      const purchase = parseFloat(purchasePrice)
+      const markup = parseFloat(markupPct)
+      return (purchase * (1 + markup / 100)).toFixed(2)
+    }
+    return ''
+  }
+
+  // Calcular porcentaje de markup basado en precio de compra y venta
+  const calculateMarkupPct = (purchasePrice: string, salePrice: string) => {
+    if (purchasePrice && salePrice) {
+      const purchase = parseFloat(purchasePrice)
+      const sale = parseFloat(salePrice)
+      if (purchase > 0) {
+        return (((sale - purchase) / purchase) * 100).toFixed(2)
+      }
+    }
+    return ''
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
+    let newFormData = { ...formData, [name]: value }
+
+    // Si cambia el precio de compra o el markup, calcular precio de venta
+    if (name === 'purchasePrice' || name === 'marginPct') {
+      const salePrice = calculateSalePrice(
+        name === 'purchasePrice' ? value : formData.purchasePrice,
+        name === 'marginPct' ? value : formData.marginPct
+      )
+      newFormData.salePrice = salePrice
+    }
+
+    // Si cambia el precio de venta, calcular markup
+    if (name === 'salePrice') {
+      const markupPct = calculateMarkupPct(formData.purchasePrice, value)
+      newFormData.marginPct = markupPct
+    }
+
+    setFormData(newFormData)
+  }
+
+  // Función específica para manejar cambios en precio de venta
+  const handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    const purchasePrice = formData.purchasePrice
+    
+    if (purchasePrice && value) {
+      const purchase = parseFloat(purchasePrice)
+      const sale = parseFloat(value)
+      
+      if (purchase > 0) {
+        const markupPct = (((sale - purchase) / purchase) * 100).toFixed(2)
+        setFormData(prev => ({
+          ...prev,
+          salePrice: value,
+          marginPct: markupPct
+        }))
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        salePrice: value
+      }))
+    }
+  }
+
+  // Función específica para manejar cambios en precio de compra
+  const handlePurchasePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    const salePrice = formData.salePrice
+    
+    if (value && salePrice) {
+      const purchase = parseFloat(value)
+      const sale = parseFloat(salePrice)
+      
+      if (purchase > 0) {
+        const markupPct = (((sale - purchase) / purchase) * 100).toFixed(2)
+        setFormData(prev => ({
+          ...prev,
+          purchasePrice: value,
+          marginPct: markupPct
+        }))
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        purchasePrice: value
+      }))
+    }
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white backdrop-blur-sm shadow-lg border-b border-gray-200">
+      <header className="bg-white shadow-lg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
@@ -231,6 +318,15 @@ export default function NewProductPage() {
               <h2 className="text-lg font-semibold text-white">Precios y Stock</h2>
             </div>
             
+            {/* Información sobre cálculo de precios */}
+            {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <h3 className="text-sm font-medium text-blue-800 mb-2">💡 Cálculo de Precios Flexible</h3>
+              <div className="text-sm text-blue-700 space-y-1">
+                <p><strong>Método 1:</strong> Ingresa precio de compra + markup → Se calcula automáticamente el precio de venta</p>
+                <p><strong>Método 2:</strong> Ingresa precio de compra + precio de venta → Se calcula automáticamente el markup</p>
+              </div>
+            </div> */}
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -256,7 +352,7 @@ export default function NewProductPage() {
                     type="number"
                     name="purchasePrice"
                     value={formData.purchasePrice}
-                    onChange={handleChange}
+                    onChange={handlePurchasePriceChange}
                     required
                     step="0.01"
                     min="0"
@@ -286,27 +382,31 @@ export default function NewProductPage() {
                     placeholder="0.00"
                   />
                   <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Se calcula automáticamente si ingresas el precio de venta
+                  </p>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Precio de Venta con Markup Aplicado
+                  Precio de Venta *
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                   <input
-                    type="text"
-                    value={
-                      formData.purchasePrice && formData.marginPct
-                        ? Math.round(parseFloat(formData.purchasePrice) * (1 + parseFloat(formData.marginPct) / 100))
-                        : '0'
-                    }
-                    disabled
-                    className="input-field pl-8 bg-gray-100"
+                    type="number"
+                    name="salePrice"
+                    value={formData.salePrice}
+                    onChange={handleSalePriceChange}
+                    required
+                    step="0.01"
+                    min="0"
+                    className="input-field pl-8"
+                    placeholder="0.00"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    {formData.pricingMode === 'WEIGHT' ? '$/kg' : '$/u'}
+                    {formData.pricingMode === 'WEIGHT' ? '$/kg' : '$/u'} - Se calcula automáticamente el markup
                   </p>
                 </div>
               </div>
@@ -374,7 +474,7 @@ export default function NewProductPage() {
               className="btn btn-primary"
             >
               {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className="rounded-full h-4 w-4 border-b-2 border-white"></div>
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />

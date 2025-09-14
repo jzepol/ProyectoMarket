@@ -23,7 +23,7 @@ export default function RootLayout({
           <div className="flex h-screen">
             <Sidebar />
             <main className="flex-1 overflow-auto lg:ml-64 p-6">
-              <div className="animate-fadeIn">
+              <div>
                 {children}
               </div>
             </main>

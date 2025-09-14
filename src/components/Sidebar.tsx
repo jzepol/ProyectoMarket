@@ -35,13 +35,13 @@ export default function Sidebar() {
     <>
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white backdrop-blur-xl shadow-xl border-r border-gray-200">
+        <div className="fixed inset-0 bg-black/50 " onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white  shadow-xl border-r border-gray-200">
           <div className="flex h-16 items-center justify-between px-4 bg-gradient-to-r from-blue-600 to-purple-600">
             <h1 className="text-xl font-bold text-white">Proyecto Market</h1>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-300"
+              className="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg "
             >
               <X className="h-6 w-6" />
             </button>
@@ -54,14 +54,14 @@ export default function Sidebar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-300 ${
+                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-xl  ${
                     isActive
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-gray-900 hover:shadow-md'
+                      : 'text-gray-600 hover:bg-blue-50 hover:text-gray-900'
                   }`}
                 >
                   <item.icon
-                    className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-300 ${
+                    className={`mr-3 h-5 w-5 flex-shrink-0  ${
                       isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
                     }`}
                   />
@@ -75,7 +75,7 @@ export default function Sidebar() {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex flex-col flex-grow bg-white backdrop-blur-xl shadow-xl border-r border-gray-200">
+        <div className="flex flex-col flex-grow bg-white  shadow-xl border-r border-gray-200">
           {/* Logo */}
           <div className="flex items-center h-16 px-4 bg-gradient-to-r from-blue-600 to-purple-600">
             <h1 className="text-xl font-bold text-white">Proyecto Market</h1>
@@ -89,14 +89,14 @@ export default function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-300 ${
+                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-xl  ${
                     isActive
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                      : 'text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-gray-900 hover:shadow-md'
+                      : 'text-gray-600 hover:bg-blue-50 hover:text-gray-900'
                   }`}
                 >
                   <item.icon
-                    className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-300 ${
+                    className={`mr-3 h-5 w-5 flex-shrink-0  ${
                       isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
                     }`}
                   />
@@ -119,7 +119,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-40">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="p-3 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-white bg-white backdrop-blur-sm shadow-lg border border-gray-200 transition-all duration-300"
+          className="p-3 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-white bg-white  shadow-lg border border-gray-200 "
         >
           <Menu className="h-6 w-6" />
         </button>

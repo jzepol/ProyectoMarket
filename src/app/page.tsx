@@ -99,7 +99,7 @@ export default function HomePage() {
         </div>
         
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <div className="rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Cargando estadísticas...</p>
         </div>
       </div>
@@ -119,7 +119,7 @@ export default function HomePage() {
           disabled={refreshing}
           className="btn-secondary flex items-center"
         >
-          <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+          <RefreshCw className="w-4 h-4 mr-2" />
           {refreshing ? 'Actualizando...' : 'Actualizar'}
         </button>
       </div>
@@ -177,7 +177,7 @@ export default function HomePage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Link href="/products/new" className="card hover:shadow-lg transition-shadow">
+        <Link href="/products/new" className="card  ">
           <div className="flex items-center">
             <div className="p-2 bg-primary-100 rounded-lg">
               <Package className="w-6 h-6 text-primary-600" />
@@ -189,7 +189,7 @@ export default function HomePage() {
           </div>
         </Link>
 
-        <Link href="/pos" className="card hover:shadow-lg transition-shadow">
+        <Link href="/pos" className="card  ">
           <div className="flex items-center">
             <div className="p-2 bg-green-100 rounded-lg">
               <ShoppingCart className="w-6 h-6 text-green-600" />
@@ -201,7 +201,7 @@ export default function HomePage() {
           </div>
         </Link>
 
-        <Link href="/movements" className="card hover:shadow-lg transition-shadow">
+        <Link href="/movements" className="card  ">
           <div className="flex items-center">
             <div className="p-2 bg-orange-100 rounded-lg">
               <BarChart3 className="w-6 h-6 text-orange-600" />

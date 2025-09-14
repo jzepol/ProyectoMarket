@@ -19,7 +19,7 @@
 /* Custom component classes */
 @layer components {
   .card {
-    @apply bg-white backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-6 transition-all duration-300 hover:shadow-xl hover:scale-[1.01];
+    @apply bg-white rounded-xl shadow-lg border border-gray-200 p-6;
   }
   
   .card-header {
@@ -27,31 +27,31 @@
   }
   
   .btn {
-    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 transform hover:scale-105 active:scale-95;
+    @apply px-6 py-3 rounded-xl font-semibold focus:outline-none focus:ring-4 focus:ring-offset-2;
   }
   
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-500 shadow-lg hover:shadow-xl border border-blue-500/20;
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 text-white focus:ring-blue-500 shadow-lg border border-blue-500/20;
   }
   
   .btn-secondary {
-    @apply bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-gray-200 hover:to-gray-300 focus:ring-gray-400 shadow-md hover:shadow-lg;
+    @apply bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 focus:ring-gray-400 shadow-md;
   }
   
   .btn-danger {
-    @apply bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 focus:ring-red-400 shadow-lg hover:shadow-xl;
+    @apply bg-gradient-to-r from-red-500 to-red-600 text-white focus:ring-red-400 shadow-lg;
   }
   
   .btn-success {
-    @apply bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 focus:ring-green-400 shadow-lg hover:shadow-xl;
+    @apply bg-gradient-to-r from-green-500 to-green-600 text-white focus:ring-green-400 shadow-lg;
   }
   
   .btn-action {
-    @apply bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 focus:ring-emerald-400 shadow-xl hover:shadow-2xl border border-emerald-400/30;
+    @apply bg-gradient-to-r from-emerald-500 to-teal-600 text-white focus:ring-emerald-400 shadow-xl border border-emerald-400/30;
   }
   
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white backdrop-blur-sm hover:bg-white;
+    @apply w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 bg-white;
   }
   
   .input-field:focus {
@@ -59,7 +59,7 @@
   }
   
   .table {
-    @apply min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden shadow-lg bg-white backdrop-blur-sm;
+    @apply min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden shadow-lg bg-white;
   }
   
   .table-header {
@@ -79,7 +79,7 @@
   }
   
   .table-row {
-    @apply hover:bg-blue-50/50 transition-colors duration-200;
+    @apply hover:bg-blue-50/50;
   }
   
   .badge {
@@ -140,10 +140,7 @@ html, body {
   margin-left: 16rem; /* 256px */
 }
 
-/* Smooth transitions */
-* {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* Smooth transitions removed for better performance */
 
 /* Focus styles for accessibility */
 button:focus, input:focus, select:focus, textarea:focus {
@@ -151,66 +148,9 @@ button:focus, input:focus, select:focus, textarea:focus {
   outline-offset: 2px;
 }
 
-/* Loading animations */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* Loading animations removed for better performance */
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(-25%);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-  }
-  50% {
-    transform: translateY(0);
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.animate-bounce {
-  animation: bounce 1s infinite;
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* Glass morphism effect */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
+/* Glass morphism effect removed for better performance */
 
 /* Gradient text */
 .gradient-text {

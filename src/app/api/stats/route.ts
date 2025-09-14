@@ -27,6 +27,16 @@ export async function GET(request: NextRequest) {
         case 'year':
           const startOfYear = new Date(now.getFullYear(), 0, 1)
           return { start: startOfYear, end: now }
+        case 'custom':
+          const customDate = searchParams.get('customDate')
+          if (customDate) {
+            // Crear fecha en zona horaria local para evitar desfases
+            const [year, month, day] = customDate.split('-').map(Number)
+            const startOfCustomDay = new Date(year, month - 1, day, 0, 0, 0, 0)
+            const endOfCustomDay = new Date(year, month - 1, day, 23, 59, 59, 999)
+            return { start: startOfCustomDay, end: endOfCustomDay }
+          }
+          return { start: startOfDay, end: now }
         default: // today
           return { start: startOfDay, end: now }
       }

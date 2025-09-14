@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Plus, ArrowUp, ArrowDown, RefreshCw } from 'lucide-react'
+import { ProductSearch } from '@/components/ProductSearch'
 
 interface Product {
   id: number
@@ -158,7 +159,7 @@ export default function MovementsPage() {
             disabled={refreshing}
             className="btn-secondary flex items-center"
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className="w-4 h-4 mr-2" />
             {refreshing ? 'Actualizando...' : 'Actualizar'}
           </button>
           <button
@@ -181,19 +182,13 @@ export default function MovementsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Producto
                 </label>
-                <select
+                <ProductSearch
+                  products={products}
                   value={formData.productId}
-                  onChange={(e) => setFormData({ ...formData, productId: e.target.value })}
-                  className="input-field"
+                  onChange={(productId) => setFormData({ ...formData, productId })}
+                  placeholder="Buscar por nombre o código de barras..."
                   required
-                >
-                  <option value="">Seleccionar producto</option>
-                  {products.map((product) => (
-                    <option key={product.id} value={product.id}>
-                      {product.name} (Stock: {Number(product.stockQty).toFixed(3)})
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div>
@@ -266,7 +261,7 @@ export default function MovementsPage() {
         
         {loading ? (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+            <div className="rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
             <p className="mt-2 text-gray-600">Cargando movimientos...</p>
           </div>
         ) : (

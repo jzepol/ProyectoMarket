@@ -204,7 +204,7 @@ export default function POSPage() {
           disabled={refreshing}
           className="btn-secondary flex items-center"
         >
-          <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+          <RefreshCw className="w-4 h-4 mr-2" />
           {refreshing ? 'Actualizando...' : 'Actualizar'}
         </button>
       </div>
@@ -230,7 +230,7 @@ export default function POSPage() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Productos Disponibles</h2>
             {loading ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+                <div className="rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
                 <p className="mt-2 text-gray-600">Cargando productos...</p>
               </div>
             ) : (
@@ -366,7 +366,7 @@ export default function POSPage() {
                 >
                   {processing ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                       Procesando...
                     </>
                   ) : (
