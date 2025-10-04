@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   // Deshabilitar caché en producción
   generateEtags: false,
   // Configurar headers para evitar caché

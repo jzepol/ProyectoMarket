@@ -154,6 +154,45 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Calcular costos de inversión del período (costos de productos vendidos)
+    const periodInvestmentCost = await prisma.saleItem.aggregate({
+      where: {
+        sale: {
+          createdAt: {
+            gte: start,
+            lte: end
+          }
+        }
+      },
+      _sum: {
+        qty: true
+      }
+    })
+
+    // Obtener el costo total de los productos vendidos
+    const soldItemsWithCosts = await prisma.saleItem.findMany({
+      where: {
+        sale: {
+          createdAt: {
+            gte: start,
+            lte: end
+          }
+        }
+      },
+      include: {
+        product: {
+          select: {
+            purchasePrice: true
+          }
+        }
+      }
+    })
+
+    // Calcular el costo total de inversión
+    const totalInvestmentCost = soldItemsWithCosts.reduce((total, item) => {
+      return total + (item.qty * item.product.purchasePrice)
+    }, 0)
+
     // Obtener productos con stock bajo
     const lowStockProducts = await prisma.product.findMany({
       where: {
@@ -303,6 +342,7 @@ export async function GET(request: NextRequest) {
       periodSales,
       periodMovements,
       periodRevenue: periodRevenue._sum.total || 0,
+      periodInvestmentCost: totalInvestmentCost,
       
       // Paginación
       currentPage: page,

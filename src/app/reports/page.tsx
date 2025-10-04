@@ -12,7 +12,8 @@ import {
   Calendar,
   Users,
   ArrowLeftRight,
-  RefreshCw
+  RefreshCw,
+  Calculator
 } from 'lucide-react'
 import { Pagination } from '@/components/Pagination'
 
@@ -21,6 +22,7 @@ interface Stats {
   lowStockProducts: number
   totalSales: number
   totalRevenue: number
+  totalInvestmentCost: number
   totalCategories: number
   totalSuppliers: number
   totalMovements: number
@@ -41,6 +43,7 @@ export default function ReportsPage() {
     lowStockProducts: 0,
     totalSales: 0,
     totalRevenue: 0,
+    totalInvestmentCost: 0,
     totalCategories: 0,
     totalSuppliers: 0,
     totalMovements: 0,
@@ -95,6 +98,7 @@ export default function ReportsPage() {
           lowStockProducts: data.lowStockProducts,
           totalSales: data.periodSales, 
           totalRevenue: data.periodRevenue,
+          totalInvestmentCost: data.periodInvestmentCost || 0,
           totalCategories: data.totalCategories,
           totalSuppliers: data.totalSuppliers,
           totalMovements: data.totalMovements,
@@ -288,6 +292,66 @@ export default function ReportsPage() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Ingresos {getDateRangeLabel()}</p>
                   <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalRevenue)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Investment Analysis */}
+          <div className="card mb-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Calculator className="w-5 h-5 mr-2 text-blue-600" />
+              Análisis de Inversión ({getDateRangeLabel()})
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="flex items-center justify-center mb-2">
+                  <DollarSign className="w-6 h-6 text-blue-600" />
+                </div>
+                <p className="text-sm font-medium text-gray-600">Ingresos Totales</p>
+                <p className="text-2xl font-bold text-green-600">{formatCurrency(stats.totalRevenue)}</p>
+              </div>
+              
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="flex items-center justify-center mb-2">
+                  <Calculator className="w-6 h-6 text-orange-600" />
+                </div>
+                <p className="text-sm font-medium text-gray-600">Costo de Inversión</p>
+                <p className="text-2xl font-bold text-orange-600">{formatCurrency(stats.totalInvestmentCost)}</p>
+                <p className="text-xs text-gray-500 mt-1">Costo de productos vendidos</p>
+              </div>
+              
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="flex items-center justify-center mb-2">
+                  <TrendingUp className="w-6 h-6 text-green-600" />
+                </div>
+                <p className="text-sm font-medium text-gray-600">Ganancia Neta</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {formatCurrency(stats.totalRevenue - stats.totalInvestmentCost)}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {stats.totalRevenue > 0 ? 
+                    `${(((stats.totalRevenue - stats.totalInvestmentCost) / stats.totalRevenue) * 100).toFixed(1)}% margen` 
+                    : '0% margen'
+                  }
+                </p>
+              </div>
+            </div>
+            
+            {/* Resumen adicional */}
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-600">Promedio por venta:</span>
+                  <span className="font-semibold ml-2">
+                    {stats.totalSales > 0 ? formatCurrency(stats.totalRevenue / stats.totalSales) : '$0'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Costo promedio por venta:</span>
+                  <span className="font-semibold ml-2">
+                    {stats.totalSales > 0 ? formatCurrency(stats.totalInvestmentCost / stats.totalSales) : '$0'}
+                  </span>
                 </div>
               </div>
             </div>

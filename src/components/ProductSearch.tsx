@@ -156,7 +156,7 @@ export function ProductSearch({
       {isOpen && searchTerm.length > 0 && filteredProducts.length === 0 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg p-4">
           <div className="text-sm text-gray-500 text-center">
-            No se encontraron productos con "{searchTerm}"
+            No se encontraron productos con &quot;{searchTerm}&quot;
           </div>
         </div>
       )}

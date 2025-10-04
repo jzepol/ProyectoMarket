@@ -7,6 +7,7 @@ interface Product {
   id: number
   name: string
   sku: string
+  barcode?: string | null
   salePrice: number
   stockQty: number
   pricingMode?: 'UNIT' | 'WEIGHT'
@@ -26,6 +27,8 @@ export default function POSPage() {
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
+  const [barcodeInput, setBarcodeInput] = useState('')
+  const [barcodeTimeout, setBarcodeTimeout] = useState<NodeJS.Timeout | null>(null)
 
   const fetchProducts = useCallback(async (showLoading = false) => {
     try {
@@ -60,11 +63,100 @@ export default function POSPage() {
       fetchProducts()
     }, 30000)
 
-    return () => clearInterval(interval)
-  }, [fetchProducts])
+    return () => {
+      clearInterval(interval)
+      // Limpiar timeout de código de barras
+      if (barcodeTimeout) {
+        clearTimeout(barcodeTimeout)
+      }
+    }
+  }, [fetchProducts, barcodeTimeout])
 
   const handleRefresh = () => {
     fetchProducts(true)
+  }
+
+  // Función para buscar producto por código de barras
+  const findProductByBarcode = (barcode: string) => {
+    return products.find(product => 
+      product.sku.toLowerCase() === barcode.toLowerCase() ||
+      (product.barcode && product.barcode.toLowerCase() === barcode.toLowerCase())
+    )
+  }
+
+  // Función para manejar el escaneo de código de barras
+  const handleBarcodeScan = (value: string) => {
+    // Limpiar timeout anterior si existe
+    if (barcodeTimeout) {
+      clearTimeout(barcodeTimeout)
+    }
+
+    // Agregar el nuevo carácter al input
+    const newInput = barcodeInput + value
+    setBarcodeInput(newInput)
+
+    // Si el input tiene más de 3 caracteres, buscar producto
+    if (newInput.length >= 3) {
+      const product = findProductByBarcode(newInput)
+      if (product) {
+        // Producto encontrado, agregarlo al carrito
+        addToCart(product)
+        setBarcodeInput('') // Limpiar input
+        return
+      }
+    }
+
+    // Si no se encuentra producto, esperar más caracteres
+    const timeout = setTimeout(() => {
+      // Si después del timeout no se encontró producto, mostrar mensaje
+      if (barcodeInput.length > 0) {
+        alert(`Producto con código "${barcodeInput}" no encontrado`)
+      }
+      setBarcodeInput('')
+    }, 200) // 200ms de timeout para detectar fin de escaneo
+
+    setBarcodeTimeout(timeout)
+  }
+
+  // Función para manejar entrada de teclado (para lectores que simulan teclado)
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    // Solo procesar si no estamos en un input de texto
+    if (e.target instanceof HTMLInputElement && e.target.type === 'text') {
+      return
+    }
+
+    // Si es Enter, procesar el código de barras acumulado
+    if (e.key === 'Enter' && barcodeInput.length > 0) {
+      e.preventDefault()
+      const product = findProductByBarcode(barcodeInput)
+      if (product) {
+        addToCart(product)
+      } else {
+        alert(`Producto con código "${barcodeInput}" no encontrado`)
+      }
+      setBarcodeInput('')
+      return
+    }
+
+    // Si es Escape, limpiar el input
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      setBarcodeInput('')
+      if (barcodeTimeout) {
+        clearTimeout(barcodeTimeout)
+      }
+      return
+    }
+
+    // Si es un carácter imprimible (números, letras), agregarlo al input
+    if (e.key.length === 1 && (
+        (e.key >= '0' && e.key <= '9') || 
+        (e.key >= 'A' && e.key <= 'Z') || 
+        (e.key >= 'a' && e.key <= 'z')
+    )) {
+      e.preventDefault()
+      handleBarcodeScan(e.key)
+    }
   }
 
   const filteredProducts = products.filter(product =>
@@ -192,12 +284,28 @@ export default function POSPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6" onKeyDown={handleKeyPress} tabIndex={0}>
+      {/* Campo oculto para capturar códigos de barras */}
+      <input
+        type="text"
+        value={barcodeInput}
+        onChange={(e) => setBarcodeInput(e.target.value)}
+        className="sr-only"
+        autoComplete="off"
+        placeholder="Código de barras"
+      />
+
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Punto de Venta</h1>
           <p className="text-gray-600">Realiza ventas rápidas y eficientes</p>
+          {barcodeInput.length > 0 && (
+            <div className="mt-2 flex items-center text-sm text-blue-600">
+              <div className="w-2 h-2 bg-blue-600 rounded-full mr-2 animate-pulse"></div>
+              Escaneando: "{barcodeInput}"
+            </div>
+          )}
         </div>
         <button
           onClick={handleRefresh}
@@ -212,6 +320,24 @@ export default function POSPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Product Search and List */}
         <div className="space-y-4">
+          {/* Scanner Info */}
+          <div className="card bg-blue-50 border-blue-200">
+            <div className="flex items-center mb-2">
+              <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                <span className="text-white text-xs font-bold">📷</span>
+              </div>
+              <h3 className="text-lg font-semibold text-blue-900">Escáner de Códigos de Barras</h3>
+            </div>
+            <p className="text-sm text-blue-700 mb-2">
+              Escanea códigos de barras directamente para agregar productos al carrito automáticamente.
+            </p>
+            <div className="text-xs text-blue-600">
+              <p>• Asegúrate de que el foco esté en esta página</p>
+              <p>• Escanea el código de barras del producto</p>
+              <p>• El producto se agregará automáticamente al carrito</p>
+            </div>
+          </div>
+
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Buscar Productos</h2>
             <div className="relative">
@@ -234,7 +360,7 @@ export default function POSPage() {
                 <p className="mt-2 text-gray-600">Cargando productos...</p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-96 overflow-y-auto">
+              <div className="space-y-2 max-h-[500px] overflow-y-auto">
                 {filteredProducts.map((product) => (
                   <div
                     key={product.id}
@@ -288,7 +414,7 @@ export default function POSPage() {
             </div>
           ) : (
             <>
-              <div className="space-y-3 max-h-64 overflow-y-auto">
+              <div className="space-y-3 max-h-96 overflow-y-auto">
                 {cart.map((item) => (
                   <div key={item.product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex-1">
