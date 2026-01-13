@@ -105,7 +105,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     } finally {
       setLoading(false)
     }
-  }, [params.id])
+  }, [params.id, router])
 
   useEffect(() => {
     fetchData()

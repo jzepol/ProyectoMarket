@@ -120,8 +120,14 @@ export default function POSPage() {
 
   // Función para manejar entrada de teclado (para lectores que simulan teclado)
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    // Solo procesar si no estamos en un input de texto
-    if (e.target instanceof HTMLInputElement && e.target.type === 'text') {
+    // No interceptar si el foco está en inputs editables (evita interferir con cantidad/peso)
+    const target = e.target as HTMLElement
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement ||
+      target.isContentEditable
+    ) {
       return
     }
 
@@ -303,7 +309,7 @@ export default function POSPage() {
           {barcodeInput.length > 0 && (
             <div className="mt-2 flex items-center text-sm text-blue-600">
               <div className="w-2 h-2 bg-blue-600 rounded-full mr-2 animate-pulse"></div>
-              Escaneando: "{barcodeInput}"
+              Escaneando: {`"${barcodeInput}"`}
             </div>
           )}
         </div>
@@ -467,7 +473,17 @@ export default function POSPage() {
                       <select
                         className="input-field w-20"
                         value={item.unit || 'kg'}
-                        onChange={(e) => updateQuantityWithUnit(item.product.id, item.unit === 'g' ? Math.round(item.quantity * 1000) : Number(item.quantity.toFixed(3)), e.target.value as 'kg' | 'g')}
+                        onChange={(e) => {
+                          const newUnit = e.target.value as 'kg' | 'g'
+                        
+                          // uso siempre item.quantity porque SIEMPRE está guardado en KG
+                          const convertedValue =
+                            newUnit === 'g'
+                              ? Math.round(item.quantity * 1000) // kg → g
+                              : Number(item.quantity.toFixed(3)) // kg → kg (ya está en kg)
+                        
+                          updateQuantityWithUnit(item.product.id, convertedValue, newUnit)
+                        }}                        
                       >
                         <option value="kg">kg</option>
                         <option value="g">g</option>
