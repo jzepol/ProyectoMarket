@@ -420,7 +420,7 @@ export default function POSPage() {
             </div>
           ) : (
             <>
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-3 max-h-[650px] overflow-y-auto">
                 {cart.map((item) => (
                   <div key={item.product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex-1">

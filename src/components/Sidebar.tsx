@@ -25,6 +25,7 @@ const navigation = [
   { name: 'Categorías', href: '/categories', icon: Tag },
   { name: 'Proveedores', href: '/suppliers', icon: Building2 },
   { name: 'Reportes', href: '/reports', icon: TrendingUp },
+  { name: 'Cancelar Ventas', href: '/cancel-sales', icon: X },
 ]
 
 export default function Sidebar() {
@@ -109,7 +110,7 @@ export default function Sidebar() {
           {/* Footer */}
           <div className="flex-shrink-0 p-4 border-t border-gray-200">
             <div className="text-xs text-gray-500 text-center">
-              © 2025 Proyecto Market Jzepol
+              © 2026 Proyecto Market Jzepol
             </div>
           </div>
         </div>

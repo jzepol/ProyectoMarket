@@ -28,13 +28,26 @@ export async function GET(request: NextRequest) {
           const startOfYear = new Date(now.getFullYear(), 0, 1)
           return { start: startOfYear, end: now }
         case 'custom':
-          const customDate = searchParams.get('customDate')
-          if (customDate) {
-            // Crear fecha en zona horaria local para evitar desfases
-            const [year, month, day] = customDate.split('-').map(Number)
+          const customDateFrom = searchParams.get('customDateFrom')
+          const customDateTo = searchParams.get('customDateTo')
+          
+          if (customDateFrom && customDateTo) {
+            // Crear fechas en zona horaria local para evitar desfases
+            const [yearFrom, monthFrom, dayFrom] = customDateFrom.split('-').map(Number)
+            const [yearTo, monthTo, dayTo] = customDateTo.split('-').map(Number)
+            const startOfCustomRange = new Date(yearFrom, monthFrom - 1, dayFrom, 0, 0, 0, 0)
+            const endOfCustomRange = new Date(yearTo, monthTo - 1, dayTo, 23, 59, 59, 999)
+            return { start: startOfCustomRange, end: endOfCustomRange }
+          } else if (customDateFrom) {
+            // Si solo hay fecha desde, usar hasta hoy
+            const [year, month, day] = customDateFrom.split('-').map(Number)
             const startOfCustomDay = new Date(year, month - 1, day, 0, 0, 0, 0)
+            return { start: startOfCustomDay, end: now }
+          } else if (customDateTo) {
+            // Si solo hay fecha hasta, usar desde el inicio de ese día
+            const [year, month, day] = customDateTo.split('-').map(Number)
             const endOfCustomDay = new Date(year, month - 1, day, 23, 59, 59, 999)
-            return { start: startOfCustomDay, end: endOfCustomDay }
+            return { start: startOfDay, end: endOfCustomDay }
           }
           return { start: startOfDay, end: now }
         default: // today
@@ -322,8 +335,13 @@ export async function GET(request: NextRequest) {
           }
         })
 
+        // Formatear fecha en zona horaria local para evitar desfases
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        
         return {
-          date: date.toISOString().split('T')[0],
+          date: `${year}-${month}-${day}`,
           sales,
           revenue: revenue._sum.total || 0
         }

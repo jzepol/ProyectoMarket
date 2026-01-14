@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Plus, ArrowUp, ArrowDown, RefreshCw } from 'lucide-react'
+import { Plus, ArrowUp, ArrowDown, RefreshCw, Filter, X } from 'lucide-react'
 import { ProductSearch } from '@/components/ProductSearch'
 
 interface Product {
@@ -35,11 +35,30 @@ export default function MovementsPage() {
     qty: '',
     reference: ''
   })
+  const [filters, setFilters] = useState({
+    productId: '',
+    dateFrom: '',
+    dateTo: ''
+  })
 
   const fetchData = useCallback(async (showLoading = false) => {
     try {
       if (showLoading) {
         setRefreshing(true)
+      }
+      
+      // Construir parámetros de búsqueda
+      const movementParams = new URLSearchParams()
+      movementParams.append('t', Date.now().toString())
+      
+      if (filters.productId) {
+        movementParams.append('productId', filters.productId)
+      }
+      if (filters.dateFrom) {
+        movementParams.append('dateFrom', filters.dateFrom)
+      }
+      if (filters.dateTo) {
+        movementParams.append('dateTo', filters.dateTo)
       }
       
       const [productsResponse, movementsResponse] = await Promise.all([
@@ -51,7 +70,7 @@ export default function MovementsPage() {
             'Expires': '0'
           }
         }),
-        fetch(`/api/movements?t=${Date.now()}`, {
+        fetch(`/api/movements?${movementParams.toString()}`, {
           cache: 'no-store',
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -79,7 +98,7 @@ export default function MovementsPage() {
       setLoading(false)
       setRefreshing(false)
     }
-  }, [])
+  }, [filters])
 
   useEffect(() => {
     fetchData(true)
@@ -144,6 +163,20 @@ export default function MovementsPage() {
     })
     setShowForm(false)
   }
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const clearFilters = () => {
+    setFilters({
+      productId: '',
+      dateFrom: '',
+      dateTo: ''
+    })
+  }
+
+  const hasActiveFilters = filters.productId || filters.dateFrom || filters.dateTo
 
   return (
     <div className="p-6">
@@ -254,6 +287,61 @@ export default function MovementsPage() {
           </form>
         </div>
       )}
+
+      {/* Filters */}
+      <div className="card mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center">
+            <Filter className="w-5 h-5 mr-2" />
+            Filtros de Búsqueda
+          </h2>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
+            >
+              <X className="w-4 h-4 mr-1" />
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Producto
+            </label>
+            <ProductSearch
+              products={products}
+              value={filters.productId}
+              onChange={(productId) => handleFilterChange('productId', productId)}
+              placeholder="Buscar por producto..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Fecha Desde
+            </label>
+            <input
+              type="date"
+              value={filters.dateFrom}
+              onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+              className="input-field"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Fecha Hasta
+            </label>
+            <input
+              type="date"
+              value={filters.dateTo}
+              onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+              className="input-field"
+              min={filters.dateFrom || undefined}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Movements Table */}
       <div className="card">

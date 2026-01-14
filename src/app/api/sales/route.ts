@@ -123,3 +123,85 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const saleId = searchParams.get('id')
+
+    if (!saleId) {
+      return NextResponse.json(
+        { error: 'ID de venta requerido' },
+        { status: 400 }
+      )
+    }
+
+    const saleIdNum = parseInt(saleId)
+
+    // Obtener la venta con sus items
+    const sale = await prisma.sale.findUnique({
+      where: { id: saleIdNum },
+      include: {
+        items: {
+          include: {
+            product: true
+          }
+        }
+      }
+    })
+
+    if (!sale) {
+      return NextResponse.json(
+        { error: 'Venta no encontrada' },
+        { status: 404 }
+      )
+    }
+
+    // Cancelar la venta: devolver productos al stock y crear movimientos
+    await prisma.$transaction(async (tx) => {
+      // Para cada item de la venta
+      for (const item of sale.items) {
+        // Devolver el producto al stock (incrementar)
+        await tx.product.update({
+          where: { id: item.productId },
+          data: {
+            stockQty: {
+              increment: item.qty
+            }
+          }
+        })
+
+        // Crear movimiento de entrada (devolución)
+        await tx.stockMovement.create({
+          data: {
+            productId: item.productId,
+            type: 'IN',
+            qty: item.qty,
+            reference: `Cancelación de Venta #${sale.id}`
+          }
+        })
+      }
+
+      // Primero eliminar los items de la venta
+      await tx.saleItem.deleteMany({
+        where: { saleId: saleIdNum }
+      })
+
+      // Luego eliminar la venta
+      await tx.sale.delete({
+        where: { id: saleIdNum }
+      })
+    })
+
+    return NextResponse.json(
+      { message: 'Venta cancelada exitosamente', saleId: saleIdNum },
+      { status: 200 }
+    )
+  } catch (error) {
+    console.error('Error canceling sale:', error)
+    return NextResponse.json(
+      { error: 'Error al cancelar la venta' },
+      { status: 500 }
+    )
+  }
+}
+

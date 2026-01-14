@@ -59,7 +59,8 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [dateRange, setDateRange] = useState('today')
-  const [customDate, setCustomDate] = useState('')
+  const [customDateFrom, setCustomDateFrom] = useState('')
+  const [customDateTo, setCustomDateTo] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [salesPerPage] = useState(10)
 
@@ -77,8 +78,13 @@ export default function ReportsPage() {
         t: Date.now().toString()
       })
       
-      if (dateRange === 'custom' && customDate) {
-        params.append('customDate', customDate)
+      if (dateRange === 'custom') {
+        if (customDateFrom) {
+          params.append('customDateFrom', customDateFrom)
+        }
+        if (customDateTo) {
+          params.append('customDateTo', customDateTo)
+        }
       }
       
       const response = await fetch(`/api/stats?${params}`, {
@@ -120,7 +126,7 @@ export default function ReportsPage() {
       setLoading(false)
       setRefreshing(false)
     }
-  }, [dateRange, customDate, salesPerPage])
+  }, [dateRange, customDateFrom, customDateTo, salesPerPage])
 
   useEffect(() => {
     fetchStats(true, currentPage)
@@ -151,12 +157,20 @@ export default function ReportsPage() {
   const handleDateRangeChange = (newDateRange: string) => {
     setDateRange(newDateRange)
     if (newDateRange !== 'custom') {
-      setCustomDate('')
+      setCustomDateFrom('')
+      setCustomDateTo('')
     }
   }
 
-  const handleCustomDateChange = (date: string) => {
-    setCustomDate(date)
+  const handleCustomDateFromChange = (date: string) => {
+    setCustomDateFrom(date)
+    if (date) {
+      setDateRange('custom')
+    }
+  }
+
+  const handleCustomDateToChange = (date: string) => {
+    setCustomDateTo(date)
     if (date) {
       setDateRange('custom')
     }
@@ -169,17 +183,35 @@ export default function ReportsPage() {
       case 'month': return 'Este Mes'
       case 'year': return 'Este Año'
       case 'custom': 
-        if (customDate) {
-          // Crear fecha en zona horaria local para evitar desfases
-          const [year, month, day] = customDate.split('-').map(Number)
-          const date = new Date(year, month - 1, day)
-          return date.toLocaleDateString('es-ES', {
+        if (customDateFrom && customDateTo) {
+          // Crear fechas en zona horaria local para evitar desfases
+          const [yearFrom, monthFrom, dayFrom] = customDateFrom.split('-').map(Number)
+          const [yearTo, monthTo, dayTo] = customDateTo.split('-').map(Number)
+          const dateFrom = new Date(yearFrom, monthFrom - 1, dayFrom)
+          const dateTo = new Date(yearTo, monthTo - 1, dayTo)
+          
+          const formattedFrom = dateFrom.toLocaleDateString('es-ES', {
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric'
           })
+          const formattedTo = dateTo.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          })
+          
+          return `${formattedFrom} - ${formattedTo}`
+        } else if (customDateFrom) {
+          const [year, month, day] = customDateFrom.split('-').map(Number)
+          const date = new Date(year, month - 1, day)
+          return `Desde ${date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          })}`
         }
-        return 'Fecha Personalizada'
+        return 'Rango Personalizado'
       default: return 'Hoy'
     }
   }
@@ -217,10 +249,21 @@ export default function ReportsPage() {
               <Calendar className="w-4 h-4 text-gray-500" />
               <input
                 type="date"
-                value={customDate}
-                onChange={(e) => handleCustomDateChange(e.target.value)}
+                value={customDateFrom}
+                onChange={(e) => handleCustomDateFromChange(e.target.value)}
                 className="input-field w-auto"
+                max={customDateTo || new Date().toISOString().split('T')[0]}
+                placeholder="Desde"
+              />
+              <span className="text-gray-500">-</span>
+              <input
+                type="date"
+                value={customDateTo}
+                onChange={(e) => handleCustomDateToChange(e.target.value)}
+                className="input-field w-auto"
+                min={customDateFrom || undefined}
                 max={new Date().toISOString().split('T')[0]}
+                placeholder="Hasta"
               />
             </div>
           )}
@@ -516,18 +559,23 @@ export default function ReportsPage() {
             <div className="card mb-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Ventas por Día ({getDateRangeLabel()})</h3>
               <div className="space-y-3">
-                {stats.salesByDay.map((day) => (
-                  <div key={day.date} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 text-gray-400 mr-2" />
-                      <span className="font-medium text-gray-900">
-                        {new Date(day.date).toLocaleDateString('es-ES', {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </span>
-                    </div>
+                {stats.salesByDay.map((day) => {
+                  // Parsear fecha en zona horaria local para evitar desfases
+                  const [year, month, dayNum] = day.date.split('-').map(Number)
+                  const date = new Date(year, month - 1, dayNum)
+                  
+                  return (
+                    <div key={day.date} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center">
+                        <Calendar className="w-4 h-4 text-gray-400 mr-2" />
+                        <span className="font-medium text-gray-900">
+                          {date.toLocaleDateString('es-ES', {
+                            weekday: 'short',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </span>
+                      </div>
                     <div className="flex items-center space-x-4">
                       <span className="text-sm text-gray-600">
                         {day.sales} ventas
@@ -537,7 +585,8 @@ export default function ReportsPage() {
                       </span>
                     </div>
                   </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}
